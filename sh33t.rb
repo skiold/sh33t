@@ -186,7 +186,7 @@ rescue
 end
 
 if editfile == true
-   `vi #{outputfile}`
+   system("vi #{output_file}")
 end
 
 #vim: set expandtab ts=3 sw=3:
