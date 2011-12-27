@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# == Synopsis
+# <%= synopsis %>
+#
+# == Usage
+# See usage() function below
+#
+# == Notes
+# <%= notes %>
+#
+# == Authors
+# <%= author %>
+#
+# == Copyright
+# <%= Time.now.year %> <%= copyright %>
+#
+# == License
+# Licensed under <%= license %>
+#
+
+# Useful helper function, shorthand for cat'ing files that have error output
+function caterror() {
+   cat "$1" >&2
+}
+
+# Like caterror, shorthand for sending strings to stderr
+function perror() {
+   printf "%s\n" "$1" >&2
+}
+
+# Print a fatal error and exit with exit code $2
+function die() {
+   perror "%s\n" "$1"
+   exit $2
+}
+
+# Use this function to print out usage information, and exit with code of $2.
+# This is useful to exit with a non-zero code due to an error in argument
+# processing.
+function usage() {
+   printf "Usage:\n"
+   printf "   %s  [-h]\n" "$(basename $0)"
+   printf "   -h  Print this message\n"
+   printf "\n"
+
+   exit $1
+}
+
+if [ -z "$1" ]; then
+   usage -1
+fi
+
+while getopts h option; do
+   case "$option" in
+      h)
+         usage 0
+      ;;
+      *)
+         die "Passing bad arguments" -1
+   esac
+done
+
+<%= vim_modeline %>

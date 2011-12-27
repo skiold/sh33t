@@ -1,0 +1,51 @@
+# == Synopsis
+# <%= synopsis %>
+#
+# == Parameters
+#
+# [*ensure*]
+#  Use this to specify whether the define's resources should be applied or
+#  removed.
+#
+# == Examples
+#
+#   class {
+#      <%= klass_name %> {
+#         "foo":
+#            ensure => "present";
+#      }
+#   }
+#
+# == Authors
+#
+# <%= author %>
+#
+# == Copyright
+#
+# Copyright <%= Time.now.year %> <%= copyright %>
+#
+# == License
+# Licensed under <%= license %>
+#
+class <%= klass_name %> (
+   $ensure = "present"
+) {
+   # Parameter Validation
+   $supported_minimum_os_versions   = { "CentOS" => 5, "Ubuntu" => 10.04 }
+   $supported_operatingsystems      = [ "CentOS", "Ubuntu" ]
+   $valid_ensure_values             = [ "present", "absent" ]
+
+   if ! ($operatingsystem in $supported_operatingsystems) {
+      fail "Your OS ($operatingsystem) is not supported by this code!"
+   }
+
+   if ($operatingsystemrelease < $supported_minimum_os_versions[$operatingsystem] ) {
+      fail "You need at least version $supported_minimum_os_versions[$operatingsystem] to use this code."
+   }
+
+   if ! ($ensure in $valid_ensure_values) {
+      fail "Invalid ensure value for <%= klass_name %> defined resource, valid values are $valid_ensure_values"
+   }
+}
+  
+<%= vim_modeline %>

@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# == Synopsis
+# <%= synopsis %>
+#
+# == Usage
+#
+# --help (-h)
+#   Show this help
+#
+# == Notes
+# <%= notes %>
+#
+# == Authors
+# <%= author %>
+#
+# == Copyright
+# <%= Time.now.year %> <%= copyright %>
+#
+# == License
+# Licensed under <%= license %>
+#
+
+require 'getoptlong'
+require 'rdoc/usage'
+
+# Show usage if no args are passed.
+if ARGV.size == 0
+   RDoc::usage
+end
+
+# Parse Options (1.8 style)
+begin
+   opts = GetoptLong.new(
+      [ '--help',          '-h',   GetoptLong::NO_ARGUMENT        ]
+   )
+
+   opts.each do |opt, arg|
+      case opt
+         when '--help'
+            RDoc::usage
+      end
+   end
+rescue
+   puts "Error: #{$!}"
+   RDoc::usage
+end
+
+<%= vim_modeline %>

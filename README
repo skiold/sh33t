@@ -1,0 +1,5 @@
+This is sh33t, a script for generating boilerplate code like comment headers
+and option parsing code. It is also useful for generating comment headers for
+puppet files. It is easy to add support for new file types by adding an ERB
+for it in the erb/ directory. You can also add custom variables by adding a
+filetype.vars.rb file. Take a look at the existing files for examples.
