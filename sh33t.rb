@@ -9,6 +9,12 @@
 #
 # == Usage
 #
+# --author (-a)
+#   This is the program author.
+#
+# --copyright (-c)
+#   This is the Person or Entity that the Copyright section is pointed to.
+#
 # --help (-h)
 #   Show this help
 #
@@ -18,6 +24,13 @@
 # --list (-l)
 #   List available file types.
 #
+# --notes (-n)
+#   These notes are put into certain templates in a NOTES section of the
+#   comment headers.
+#
+# --synopsis (-s)
+#   Overview of what the script/tool/library is for.
+#   
 # --type (-t)
 #   Use this to set the filetype. Check for available ones with -l.
 #
@@ -36,7 +49,7 @@ require 'getoptlong'
 require 'rdoc/usage'
 require 'time'
 
-load './mytouch.cfg'
+load './sh33t.cfg'
 
 def print_supported_filetypes(erbdir, filetypes)
    puts "Supported Filetypes:"
@@ -77,18 +90,33 @@ filetypes.map! { |filetype| filetype.gsub /\.erb$/, '' }
 
 begin
    opts = GetoptLong.new(
-      [ '--help', '-h',   GetoptLong::NO_ARGUMENT        ],
-      [ '--file', '-f',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--type', '-t',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--list', '-l',   GetoptLong::NO_ARGUMENT        ]
+      [ '--author',     '-a',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--copyright',  '-c',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--file',       '-f',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--help',       '-h',   GetoptLong::NO_ARGUMENT        ],
+      [ '--notes',      '-n',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--synopsis',   '-s',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--type',       '-t',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--list',       '-l',   GetoptLong::NO_ARGUMENT        ]
    )
 
    opts.each do |opt, arg|
       case opt
-         when '--help'
-            RDoc::usage
+         when '--author'
+            AUTHOR = arg
+         when '--copyright'
+            COPYRIGHT = arg
          when '--file'
             output_file = arg
+         when '--help'
+            RDoc::usage
+         when '--list'
+            print_supported_filetypes(erbdir, filetypes)
+            exit 0
+         when '--notes'
+            NOTES = arg
+         when '--synopsis'
+            SYNOPSIS = arg
          when '--type'
             chosen_filetype = arg
 
@@ -96,9 +124,6 @@ begin
             if !filetypes.member? chosen_filetype
                raise "Invalid filetype (-t)!"
             end
-         when '--list'
-            print_supported_filetypes(erbdir, filetypes)
-            exit 0
       end
    end
 
