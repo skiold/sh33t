@@ -1,3 +1,4 @@
+<!--
 # This file is managed by puppet
 #
 # Class:       <%= base_klass_dir %>
@@ -10,5 +11,6 @@
 #
 # Synopsis:    <%= synopsis %>
 #
+-->
 
-<%= vim_modeline %>
+<%= vim_modeline.sub('#', '<!-- ') + (" -->") %>

@@ -1,5 +1,5 @@
 # == Synopsis
-# <%= SYNOPSIS %>
+# <%= synopsis %>
 #
 # == Parameters
 #
@@ -9,23 +9,23 @@
 #
 # == Examples
 #
-#   <%= DEFINE_NAME %> {
+#   <%= define_name %> {
 #      "foo":
 #         ensure => "present";
 #   }
 #
 # == Authors
 #
-# <%= AUTHOR %>
+# <%= author %>
 #
 # == Copyright
 #
-# Copyright <%= Time.now.year %> <%= COPYRIGHT %>
+# Copyright <%= Time.now.year %> <%= copyright %>
 #
 # == License
-# Licensed under <%= LICENSE %>
+# Licensed under <%= license %>
 #
-define <%= DEFINE_NAME %> (
+define <%= define_name %> (
    $ensure = "present"
 ) {
    # Parameter Validation
@@ -42,8 +42,8 @@ define <%= DEFINE_NAME %> (
    }
 
    if ! ($ensure in $valid_ensure_values) {
-      fail "Invalid ensure value for <%= DEFINE_NAME %> defined resource, valid values are $valid_ensure_values"
+      fail "Invalid ensure value for <%= define_name %> defined resource, valid values are $valid_ensure_values"
    }
 }
   
-<%= VIM_MODELINE %>
+<%= vim_modeline %>

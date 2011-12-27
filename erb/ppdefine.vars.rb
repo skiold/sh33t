@@ -1,5 +1,3 @@
-# Some code to determine puppet sources, which aren't 1-1 mappings of dir-
-# rectory structures.
 environment = ""
 environment_index = 0
 base_klass_dir = ""
@@ -18,11 +16,11 @@ path_array.each_with_index do |dir,index|
 end
 
 if environment.nil? or base_klass_dir.nil?
-   STDERR.puts "Something is not right, could not properly determine file source"
+   STDERR.puts "Something is not right, could not properly determine necessary info from path"
 end
 
-file_source = path_array[environment_index..-1].join(File::SEPARATOR) + File::SEPARATOR + output_file
+path_array.delete_at(base_klass_index + 1)
 
-# Here are the actual variables used in the ppfile.erb
-base_klass_dir = base_klass_dir
-file_source = file_source
+# Actual Vars used in ERB file.
+define_name = path_array[base_klass_index..-1].join("::") + "::" + output_file.sub(/\.pp$/, "")
+

@@ -29,11 +29,11 @@
 # --list (-l)
 #   List available file types.
 #
-# --NOTES (-n)
-#   These NOTES are put into certain templates in a NOTES section of the
+# --notes (-n)
+#   These notes are put into certain templates in a notes section of the
 #   comment headers.
 #
-# --SYNOPSIS (-s)
+# --synopsis (-s)
 #   Overview of what the script/tool/library is for.
 #   
 # --type (-t)
@@ -77,9 +77,9 @@ end
 # Set these to empty strings, making it necessary to use -f to set this.
 chosen_filetype = ""
 output_file = ""
-EDITFILE = false
-NOTES = "This program sometimes overcooks the pizza."
-SYNOPSIS = "This is a program that frizzenams the phacelem."
+editfile = false
+notes = "This program sometimes overcooks the pizza."
+synopsis = "This is a program that frizzenams the phacelem."
 
 # Get ERB path.
 erbdir = File.expand_path(File.dirname(__FILE__)) + "/erb"
@@ -107,8 +107,8 @@ begin
       [ '--edit',          '-e',   GetoptLong::NO_ARGUMENT        ],
       [ '--file',          '-f',   GetoptLong::REQUIRED_ARGUMENT  ],
       [ '--help',          '-h',   GetoptLong::NO_ARGUMENT        ],
-      [ '--NOTES',         '-n',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--SYNOPSIS',      '-s',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--notes',         '-n',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--synopsis',      '-s',   GetoptLong::REQUIRED_ARGUMENT  ],
       [ '--type',          '-t',   GetoptLong::REQUIRED_ARGUMENT  ],
       [ '--list',          '-l',   GetoptLong::NO_ARGUMENT        ]
    )
@@ -116,11 +116,11 @@ begin
    opts.each do |opt, arg|
       case opt
          when '--author'
-            AUTHOR = arg
+            author = arg
          when '--copyright'
-            COPYRIGHT = arg
+            copyright = arg
          when '--edit'
-            EDITFILE = true
+            editfile = true
          when '--file'
             output_file = arg
          when '--help'
@@ -128,10 +128,10 @@ begin
          when '--list'
             print_supported_filetypes(erbdir, filetypes)
             exit 0
-         when '--NOTES'
-            NOTES = arg
-         when '--SYNOPSIS'
-            SYNOPSIS = arg
+         when '--notes'
+            notes = arg
+         when '--synopsis'
+            synopsis = arg
          when '--type'
             chosen_filetype = arg
 
@@ -185,7 +185,7 @@ rescue
    STDERR.puts "Error opening #{output_file}: #{$!}"
 end
 
-if EDITFILE == true
+if editfile == true
    `vi #{outputfile}`
 end
 
