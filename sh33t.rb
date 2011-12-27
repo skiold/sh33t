@@ -5,7 +5,9 @@
 # some cases. All it takes to add support for a new type of file is to throw
 # a file named ${type}.erb in the erb folder. You *must* pass something to -f
 # and a type to -t. You can also add arbitrary variables to the .cfg file as
-# it is blindly loaded.
+# it is blindly loaded. Note that you can add specific variables for certain
+# scripts by adding a filetype.vars.rb file in erb folder. An example is the
+# ppfile type, which needs to fill in a source variable.
 #
 # == Usage
 #
@@ -15,20 +17,23 @@
 # --copyright (-c)
 #   This is the Person or Entity that the Copyright section is pointed to.
 #
-# --help (-h)
-#   Show this help
+# --edit (-e)
+#   Automatically open file after creation for editing with vi.
 #
 # --file (-f)
 #   Use this to set the output file.
 #
+# --help (-h)
+#   Show this help
+#
 # --list (-l)
 #   List available file types.
 #
-# --notes (-n)
-#   These notes are put into certain templates in a NOTES section of the
+# --NOTES (-n)
+#   These NOTES are put into certain templates in a NOTES section of the
 #   comment headers.
 #
-# --synopsis (-s)
+# --SYNOPSIS (-s)
 #   Overview of what the script/tool/library is for.
 #   
 # --type (-t)
@@ -43,13 +48,17 @@
 # == Copyright
 # 2011 The Silent Penguin LLC
 #
+# == License
+# Licensed under the GPLv2 license.
+#
 
 require 'erb'
 require 'getoptlong'
 require 'rdoc/usage'
 require 'time'
 
-load './sh33t.cfg'
+config_file = File.expand_path(File.dirname(__FILE__)) + File::SEPARATOR + "sh33t.cfg"
+TOPLEVEL_BINDING.eval File.read(config_file)
 
 def print_supported_filetypes(erbdir, filetypes)
    puts "Supported Filetypes:"
@@ -68,6 +77,9 @@ end
 # Set these to empty strings, making it necessary to use -f to set this.
 chosen_filetype = ""
 output_file = ""
+EDITFILE = false
+NOTES = "This program sometimes overcooks the pizza."
+SYNOPSIS = "This is a program that frizzenams the phacelem."
 
 # Get ERB path.
 erbdir = File.expand_path(File.dirname(__FILE__)) + "/erb"
@@ -90,14 +102,15 @@ filetypes.map! { |filetype| filetype.gsub /\.erb$/, '' }
 
 begin
    opts = GetoptLong.new(
-      [ '--author',     '-a',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--copyright',  '-c',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--file',       '-f',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--help',       '-h',   GetoptLong::NO_ARGUMENT        ],
-      [ '--notes',      '-n',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--synopsis',   '-s',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--type',       '-t',   GetoptLong::REQUIRED_ARGUMENT  ],
-      [ '--list',       '-l',   GetoptLong::NO_ARGUMENT        ]
+      [ '--author',        '-a',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--copyright',     '-c',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--edit',          '-e',   GetoptLong::NO_ARGUMENT        ],
+      [ '--file',          '-f',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--help',          '-h',   GetoptLong::NO_ARGUMENT        ],
+      [ '--NOTES',         '-n',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--SYNOPSIS',      '-s',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--type',          '-t',   GetoptLong::REQUIRED_ARGUMENT  ],
+      [ '--list',          '-l',   GetoptLong::NO_ARGUMENT        ]
    )
 
    opts.each do |opt, arg|
@@ -106,6 +119,8 @@ begin
             AUTHOR = arg
          when '--copyright'
             COPYRIGHT = arg
+         when '--edit'
+            EDITFILE = true
          when '--file'
             output_file = arg
          when '--help'
@@ -113,9 +128,9 @@ begin
          when '--list'
             print_supported_filetypes(erbdir, filetypes)
             exit 0
-         when '--notes'
+         when '--NOTES'
             NOTES = arg
-         when '--synopsis'
+         when '--SYNOPSIS'
             SYNOPSIS = arg
          when '--type'
             chosen_filetype = arg
@@ -135,6 +150,14 @@ rescue
    RDoc::usage
 end
 
+# Compute full path of possible extra vars file.
+extra_vars_filepath = erbdir + File::SEPARATOR + chosen_filetype + ".vars.rb"
+
+# load extra vars if they exist
+if File.exists? extra_vars_filepath
+   TOPLEVEL_BINDING.eval File.read(extra_vars_filepath)
+end
+
 # This is the full path to the ERB template used
 template_filepath = erbdir + File::SEPARATOR + chosen_filetype + ".erb"
 
@@ -146,7 +169,7 @@ begin
       template = f.read
    end
 rescue
-   STDERR.puts "Fatal Error reading in #{template_filepath}"
+   STDERR.puts "Fatal Error reading in #{template_filepath}: #{$!}"
    exit -4
 end
 
@@ -159,7 +182,11 @@ begin
       STDERR.puts "You tried to write to a file that already exists!"
    end
 rescue
-   STDERR.puts "Error opening #{output_file}"
+   STDERR.puts "Error opening #{output_file}: #{$!}"
+end
+
+if EDITFILE == true
+   `vi #{outputfile}`
 end
 
 #vim: set expandtab ts=3 sw=3:

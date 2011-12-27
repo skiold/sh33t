@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # == Synopsis
 # <%= SYNOPSIS %>
 #
@@ -13,6 +13,9 @@
 #
 # == Copyright
 # <%= Time.now.year %> <%= COPYRIGHT %>
+#
+# == License
+# Licensed under <%= LICENSE %>
 #
 
 # Useful helper function, shorthand for cat'ing files that have error output
@@ -35,7 +38,7 @@ function die() {
 # This is useful to exit with a non-zero code due to an error in argument
 # processing.
 function usage() {
-   printf "Usage:\n\"
+   printf "Usage:\n"
    printf "   %s  [-h]\n" "$(basename $0)"
    printf "   -h  Print this message\n"
    printf "\n"
